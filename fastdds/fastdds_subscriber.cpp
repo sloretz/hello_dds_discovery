@@ -96,6 +96,18 @@ bool HelloWorldSubscriber::init()
     pqos.name("Participant_sub");
     auto factory = DomainParticipantFactory::get_instance();
 
+    // Clear the list of multicast listening locators to prevent multicast discovery
+    pqos.wire_protocol().builtin.metatrafficMulticastLocatorList.clear();
+    // Add Metatraffic Unicast Locator with null address and null port.
+    // Fast DDS will then listen on all network interfaces for unicast discovery traffic
+    eprosima::fastrtps::rtps::Locator_t default_unicast_locator;
+    pqos.wire_protocol().builtin.metatrafficUnicastLocatorList.push_back(
+        default_unicast_locator);
+    // Add localhost as a static peer
+    eprosima::fastrtps::rtps::Locator_t peer;
+    eprosima::fastrtps::rtps::IPLocator::setIPv4(peer, "127.0.0.1");
+    pqos.wire_protocol().builtin.initialPeersList.push_back(peer);
+
     participant_ = factory->create_participant(0, pqos);
 
     if (participant_ == nullptr)

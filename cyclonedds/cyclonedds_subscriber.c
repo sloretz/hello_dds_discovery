@@ -7,8 +7,24 @@
 /* An array of one message (aka sample in dds terms) will be used. */
 #define MAX_SAMPLES 1
 
+const char * kConfig =
+"<CycloneDDS>"
+" <Domain>"
+"   <General>"
+"     <AllowMulticast>false</AllowMulticast>"
+"   </General>"
+"   <Discovery>"
+"     <ParticipantIndex>auto</ParticipantIndex>"
+"     <Peers>"
+"       <Peer Address=\"127.0.0.1\"/>"
+"     </Peers>"
+"   </Discovery>"
+" </Domain>"
+"</CycloneDDS>";
+
 int main (int argc, char ** argv)
 {
+  dds_entity_t domain_handle;
   dds_entity_t participant;
   dds_entity_t topic;
   dds_entity_t reader;
@@ -19,6 +35,12 @@ int main (int argc, char ** argv)
   dds_qos_t *qos;
   (void)argc;
   (void)argv;
+
+  /* Configure a domain with custom XML */
+  domain_handle= dds_create_domain(0, kConfig);
+  if (domain_handle < 0 ) {
+    DDS_FATAL("dds_create_domain: %s\n", dds_strretcode(-domain_handle));
+  }
 
   /* Create a Participant. */
   participant = dds_create_participant (DDS_DOMAIN_DEFAULT, NULL, NULL);
@@ -77,6 +99,10 @@ int main (int argc, char ** argv)
 
   /* Deleting the participant will delete all its children recursively as well. */
   rc = dds_delete (participant);
+  if (rc != DDS_RETCODE_OK)
+    DDS_FATAL("dds_delete: %s\n", dds_strretcode(-rc));
+
+  rc = dds_delete(domain_handle);
   if (rc != DDS_RETCODE_OK)
     DDS_FATAL("dds_delete: %s\n", dds_strretcode(-rc));
 
