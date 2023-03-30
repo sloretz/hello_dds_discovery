@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+    <name>hello_dds_discovery</name>
+    <version>0.0.1</version>
+    <description>Discovery issues MRE.</description>
+    <maintainer email="sloretz@intrinsic.ai">Shane Loretz</maintainer>
+    <license>TODO</license>
+
+    <buildtool_depend>cmake</buildtool_depend>
+
+    <depend>cyclonedds</depend>
+    <depend>fastrtps</depend>
+    <depend>fastcdr</depend>
+
+    <export>
+        <build_type>cmake</build_type>
+    </export>
+</package>
