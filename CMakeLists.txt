@@ -6,8 +6,10 @@ find_package(CycloneDDS REQUIRED)
 
 idlc_generate(TARGET hw_idl_cyclonedds FILES "HelloWorld.idl")
 
-add_executable(cyclonedds_publisher cyclonedds_publisher.c)
-add_executable(cyclonedds_subscriber cyclonedds_subscriber.c)
+add_executable(cyclonedds_publisher
+    cyclonedds/cyclonedds_publisher.c)
+add_executable(cyclonedds_subscriber
+    cyclonedds/cyclonedds_subscriber.c)
 
 target_link_libraries(cyclonedds_publisher hw_idl_cyclonedds CycloneDDS::ddsc)
 target_link_libraries(cyclonedds_subscriber hw_idl_cyclonedds CycloneDDS::ddsc)
@@ -19,8 +21,8 @@ find_package(fastcdr REQUIRED)
 find_package(fastrtps REQUIRED)
 
 add_library(hw_idl_fastdds STATIC
-    HelloWorld.cxx
-    HelloWorldPubSubTypes.cxx
+    fastdds/HelloWorld.cxx
+    fastdds/HelloWorldPubSubTypes.cxx
 )
 target_link_libraries(hw_idl_fastdds PUBLIC
     fastrtps
@@ -28,14 +30,14 @@ target_link_libraries(hw_idl_fastdds PUBLIC
 )
 
 add_executable(fastdds_publisher
-    fastdds_publisher.cpp)
+    fastdds/fastdds_publisher.cpp)
 target_compile_definitions(fastdds_publisher PRIVATE
     $<$<STREQUAL:"${CMAKE_BUILD_TYPE}","Debug">:__DEBUG>
 )
 target_link_libraries(fastdds_publisher fastrtps fastcdr hw_idl_fastdds)
 
 add_executable(fastdds_subscriber
-    fastdds_subscriber.cpp)
+    fastdds/fastdds_subscriber.cpp)
 target_compile_definitions(fastdds_subscriber PRIVATE
     $<$<STREQUAL:"${CMAKE_BUILD_TYPE}","Debug">:__DEBUG>
 )
